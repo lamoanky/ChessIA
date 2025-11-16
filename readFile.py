@@ -27,7 +27,7 @@ moveTensor = torch.FloatTensor(numpy.array(moves))
 
 dataset = ChessPositionDataset(boardTensor, moveTensor)
 print(len(dataset))
-print("hi")
+
 pgn.close()
 #test
 #d

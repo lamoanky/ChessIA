@@ -14,6 +14,6 @@ class ChessPositionDataset(Dataset):
     def __len__(self):
         return len(self.pos)
     
-    def __getitem__(self, idx):
-        return self.pos[idx], self.move[idx]
+    def __getitem__(self, index):
+        return self.pos[index], self.move[index]
 
