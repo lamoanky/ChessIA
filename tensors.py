@@ -32,24 +32,28 @@ def boardToTensor(board):
     
 
 
-def moveToTensor(UCImove):
+def moveToValue(UCImove): #changing this so that it returns a value instead of a 2x8x8 tensor
     move = chess.Move.from_uci(UCImove)
-    tensor = numpy.zeros((2,8,8))
     fromSquare = move.from_square
     toSquare = move.to_square
 
-    fromRank = chess.square_rank(fromSquare)
-    fromFile = chess.square_file(fromSquare)
+    return fromSquare * 64 + toSquare
+    
 
-    toRank = chess.square_rank(toSquare)
-    toFile = chess.square_file(toSquare)
+"""
+move = chess.Move.from_uci(UCImove)
+tensor = numpy.zeros((2,8,8))
+fromSquare = move.from_square
+toSquare = move.to_square
 
-    tensor[0, 7 - fromRank, fromFile] = 1
-    tensor[1, 7 - toRank, toFile] = 1
+fromRank = chess.square_rank(fromSquare)
+fromFile = chess.square_file(fromSquare)
 
-    return tensor
+toRank = chess.square_rank(toSquare)
+toFile = chess.square_file(toSquare)
 
+tensor[0, 7 - fromRank, fromFile] = 1
+tensor[1, 7 - toRank, toFile] = 1
 
-
-
-#hi
+return tensor
+"""
