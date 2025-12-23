@@ -7,8 +7,6 @@ if(torch.cuda.is_available()):
 else:
     device = "cpu"
 
-print(f"Using {device}")
-
 class ChessModel(nn.Module):
     def __init__(self):
         super().__init__()
@@ -32,7 +30,7 @@ class ChessModel(nn.Module):
   
 
         
-    def forward(self, x):
+    def forward(self, x): #returns predictions
         x = self.conv1(x)
         x = self.relu1(x)
         x = self.batchNorm1(x)
