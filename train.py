@@ -8,7 +8,7 @@ import time
 
 print("Starting training!")
 
-epochs = 50
+epochs = 100
 
 model = ChessModel().to(device)
 loss = nn.CrossEntropyLoss()
