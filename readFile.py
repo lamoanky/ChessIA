@@ -11,7 +11,7 @@ def readF():
     positions = []
     moves = []
     currentGame = 0
-    maxGames = 10000
+    maxGames = 10001
     quarterGames = maxGames // 4
     print("Initializing game...")
 
