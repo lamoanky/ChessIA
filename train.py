@@ -9,38 +9,42 @@ import time
 print("Starting training!")
 
 epochs = 50
+chunkSize = 5000
+chunkAmount = 10
 
 model = ChessModel().to(device)
 loss = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-dataLoader = DataLoader(readF(), batch_size=64, shuffle=True)
+
 
 for epoch in range(epochs):
     startTime = time.time()
-
     model.train()
     averageLoss = 0
     batches = 0
     correct = 0
     batchSize = 0
+    for i in range(chunkAmount):
+        dataLoader = DataLoader(readF(i), batch_size=64, shuffle=True)
+        
 
-    for batch, (pos, move) in enumerate(dataLoader):
-        batchSize = pos.size(0)
-        pos = pos.to(device)
-        move = move.to(device)
+        for batch, (pos, move) in enumerate(dataLoader):
+            batchSize = pos.size(0)
+            pos = pos.to(device)
+            move = move.to(device)
 
-        optimizer.zero_grad()
-        prediction = model(pos)
-        lossValue = loss(prediction, move)
-        lossValue.backward()
-        optimizer.step()
+            optimizer.zero_grad()
+            prediction = model(pos)
+            lossValue = loss(prediction, move)
+            lossValue.backward()
+            optimizer.step()
 
-        maximum, predictedMove = prediction.max(1)
-        correct += predictedMove.eq(move).sum().item()
+            maximum, predictedMove = prediction.max(1)
+            correct += predictedMove.eq(move).sum().item()
 
-        averageLoss += lossValue.item() * batchSize
-        batches += batchSize
-    
+            averageLoss += lossValue.item() * batchSize
+            batches += batchSize
+        
     averageLoss = averageLoss/batches
     endTime = time.time()
     totalTime = endTime-startTime

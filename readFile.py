@@ -6,14 +6,16 @@ import numpy
 
 
 
-def readF():
+def readF(currentChunk):
     pgn = open("dataset/lichess_elite_2020-06.pgn")
     positions = []
     moves = []
     currentGame = 0
-    maxGames = 10000
+    maxGames = 1000
     quarterGames = maxGames // 4
     print("Initializing game...")
+    for i in range(1000*currentChunk):
+        chess.pgn.read_game(pgn)
 
     for i in range(maxGames):
         game = chess.pgn.read_game(pgn)
@@ -26,6 +28,8 @@ def readF():
             positions.append(boardArray)
             moves.append(moveValue)
             board.push(move)
+        
+
         try:
             if (i+1) % quarterGames == 0:
                 print(f"Read {((i+1) / maxGames) * 100}% of total games.")
