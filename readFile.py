@@ -6,20 +6,20 @@ import numpy
 
 
 
-def readF(currentChunk):
+def readF(currentChunk, chunkSize):
     pgn = open("dataset/lichess_elite_2020-06.pgn")
     positions = []
     moves = []
-    currentGame = 0
-    maxGames = 1000
-    quarterGames = maxGames // 4
     print("Initializing game...")
-    for i in range(1000*currentChunk):
+    for i in range(chunkSize*currentChunk):
         chess.pgn.read_game(pgn)
 
-    for i in range(maxGames):
+    for i in range(chunkSize):
         game = chess.pgn.read_game(pgn)
         board = game.board()
+
+        if game is None:
+            break
 
         for move in game.mainline_moves():
             boardArray = boardToTensor(board)
@@ -30,16 +30,10 @@ def readF(currentChunk):
             board.push(move)
         
 
-        try:
-            if (i+1) % quarterGames == 0:
-                print(f"Read {((i+1) / maxGames) * 100}% of total games.")
-        except ZeroDivisionError:
-            pass
 
-    print("Converting to tensors...")
     boardTensor = torch.FloatTensor(numpy.array(positions))
     moveTensor = torch.LongTensor(numpy.array(moves))
-    print("Done converting to tensors!")
+
 
     dataset = ChessPositionDataset(boardTensor, moveTensor)
     print(f"Done reading games! Read a total of: {len(dataset)} positions.")

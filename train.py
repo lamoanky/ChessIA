@@ -25,7 +25,7 @@ for epoch in range(epochs):
     correct = 0
     batchSize = 0
     for i in range(chunkAmount):
-        dataLoader = DataLoader(readF(i), batch_size=64, shuffle=True)
+        dataLoader = DataLoader(readF(i, chunkSize), batch_size=64, shuffle=True)
         
 
         for batch, (pos, move) in enumerate(dataLoader):
