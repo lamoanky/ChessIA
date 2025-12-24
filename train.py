@@ -55,5 +55,5 @@ for epoch in range(epochs):
     print(correct, batches)
     print("---------------------")   
 
-torch.save(model.state_dict(), "model.pth")
+torch.save(model.state_dict(), "/content/drive/MyDrive/ChessIA/model.pth")
 print("End of training!")
