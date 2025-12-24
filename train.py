@@ -8,7 +8,7 @@ import time
 
 print("Starting training!")
 
-epochs = 30
+epochs = 20
 chunkSize = 5000
 chunkAmount = 10
 
