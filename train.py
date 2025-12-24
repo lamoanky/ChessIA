@@ -2,30 +2,30 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from readFile import dataset
+from readFile import readF
 from neuralNetwork import ChessModel, device
 import time
 
 print("Starting training!")
 
-epochs = 3
-batchSize = 64
+epochs = 50
 
 model = ChessModel().to(device)
 loss = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-dataLoader = DataLoader(dataset, batch_size=batchSize, shuffle=True)
+dataLoader = DataLoader(readF(), batch_size=64, shuffle=True)
 
 for epoch in range(epochs):
     startTime = time.time()
 
     model.train()
     averageLoss = 0
-    totalBatches = len(dataLoader)
     batches = 0
     correct = 0
+    batchSize = 0
 
     for batch, (pos, move) in enumerate(dataLoader):
+        batchSize = pos.size(0)
         pos = pos.to(device)
         move = move.to(device)
 
@@ -38,24 +38,22 @@ for epoch in range(epochs):
         maximum, predictedMove = prediction.max(1)
         correct += predictedMove.eq(move).sum().item()
 
-        averageLoss += lossValue.item()
+        averageLoss += lossValue.item() * batchSize
+        batches += batchSize
     
-    averageLoss = averageLoss/totalBatches
+    averageLoss = averageLoss/batches
     endTime = time.time()
     totalTime = endTime-startTime
-    batches += batchSize
+    accuracy = correct/batches * 100
 
 
     print("---------------------")
     print(f"Epoch #{epoch+1}:") 
     print(f"Time taken: {totalTime}")
     print(f"Average loss: {averageLoss}")
-    print(f"Accuracy: {correct/len(dataset) * 100}%")
+    print(f"Accuracy: {accuracy}%")
+    print(correct, batches)
     print("---------------------")   
 
-    
-
-
-
+torch.save(model.state_dict(), "model.pth")
 print("End of training!")
-
