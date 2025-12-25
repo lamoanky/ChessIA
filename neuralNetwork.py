@@ -12,7 +12,7 @@ class ChessModel(nn.Module):
         super().__init__()
 
         #converts 12x8x8 into 64x8x8 by looking at 3x3 squares to help detect patterns
-        self.conv1 = nn.Conv2d(in_channels = 12, out_channels=64, kernel_size = 3, padding = 1)
+        self.conv1 = nn.Conv2d(in_channels = 13, out_channels=64, kernel_size = 3, padding = 1)
         self.relu1 = nn.ReLU()
         self.batchNorm1 = nn.BatchNorm2d(64)
 

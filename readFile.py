@@ -44,4 +44,4 @@ def readF(currentChunk, chunkSize):
 
 
 if __name__ == "__main__":
-    readF()
+    readF(0, 100)

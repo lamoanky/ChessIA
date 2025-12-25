@@ -36,7 +36,7 @@ def boardToTensor(board):
     return tensor
         
     
-print(boardToTensor(board))
+
 
 def moveToValue(UCImove): #changing this so that it returns a value instead of a 2x8x8 tensor
     move = chess.Move.from_uci(UCImove)
