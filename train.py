@@ -60,7 +60,7 @@ for epoch in range(epochs):
     print("---------------------")   
 
     if epoch%5 ==0 and epoch != 0:
-        torch.save(model.state_dict(), f"/content/drive/MyDrive/ChessIA/model{epoch+1}.pth")
+        torch.save(model.state_dict(), f"/content/drive/MyDrive/ChessIA/model{epoch+1}v2.pth")
         print(f"Saved model {epoch+1}!")
 
 torch.save(model.state_dict(), f"/content/drive/MyDrive/ChessIA/modelfinal.pth")
