@@ -4,7 +4,7 @@ import numpy
 board = chess.Board()
 
 def boardToTensor(board):
-    tensor = numpy.zeros((12,8,8))
+    tensor = numpy.zeros((13,8,8))
 
     for square in range(64):
         currentPiece = board.piece_at(square)
@@ -27,10 +27,16 @@ def boardToTensor(board):
         else:
             tensor[pieceType + 6, 7-rank, file] = 1
 
+    for move in board.legal_moves:
+        toSquare = move.to_square
+        rank = chess.square_rank(toSquare)
+        file = chess.square_file(toSquare)
+        tensor[12, 7-rank, file] = 1
+
     return tensor
         
     
-
+print(boardToTensor(board))
 
 def moveToValue(UCImove): #changing this so that it returns a value instead of a 2x8x8 tensor
     move = chess.Move.from_uci(UCImove)
