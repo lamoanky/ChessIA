@@ -1,5 +1,7 @@
 import pygame
 import chess
+from predict import predictMove
+
 
 darkColor = (181, 135, 99)
 lightColor = (240, 218, 181)
@@ -34,6 +36,7 @@ running = True
 selected = False
 selectedCoord = None
 gameOver = None
+playerTurn = True
 
 
 pieceToImage = {'P' : whitePawn, 'N' : whiteKnight, 'B' : whiteBishop, 'R' : whiteRook, 'Q' : whiteQueen, 'K' : whiteKing, 'p' : blackPawn, 'n' : blackKnight, 'b' : blackBishop, 'r' : blackRook, 'q' : blackQueen, 'k' : blackKing}
@@ -61,7 +64,10 @@ def drawPieces(board):
             screen.blit(pieceToImage[piece.symbol()],(col*64, row*64))
 
 def movePiece(coordinates):
-    global selected, selectedCoord, gameOver
+    global selected, selectedCoord, gameOver, playerTurn
+
+    if gameOver:
+        return
     file = findFile[coordinates[0]//64]
     rank = str(8-coordinates[1]//64)
 
@@ -78,8 +84,12 @@ def movePiece(coordinates):
         promoteMove = chess.Move.from_uci(f"{selectedCoord}{notation}q")
         if(checkLegal(move, piece, promoteMove) == 1):
             board.push(move)
+            playerTurn = False
+
+
         elif (checkLegal(move, piece, promoteMove) == 2):
             board.push(promoteMove)
+            playerTurn = False
 
 
         if board.is_game_over():
@@ -92,6 +102,10 @@ def movePiece(coordinates):
             else:
                 gameOver = "Draw"
                 print("Draw!")
+    
+    if not gameOver and not playerTurn:
+        board.push(predictMove(board))            
+        playerTurn = True
 
 
     selected = not selected
@@ -137,7 +151,7 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        if event.type == pygame.MOUSEBUTTONDOWN:
+        if event.type == pygame.MOUSEBUTTONDOWN and playerTurn:
             movePiece(pygame.mouse.get_pos())
 
     drawSquares()
