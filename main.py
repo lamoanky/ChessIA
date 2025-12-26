@@ -163,13 +163,20 @@ def drawCheckmate():
         square = chess.square_name(board.king(chess.BLACK))
         file = findFileReverse[square[0]]
         rank = 8-int(square[1])
-        screen.blit(mateSquare, (64*file, 64*rank))
+
+        if isWhite:
+            screen.blit(mateSquare, (64*file, 64*rank))
+        else:
+            screen.blit(mateSquare, (448-64*file, 448-64*rank))
         #pygame.draw.rect(screen, mateColor, (64*file, 64*rank, 64, 64))
     if gameOver == "White":
         square = chess.square_name(board.king(chess.WHITE))
         file = findFileReverse[square[0]]
         rank = 8-int(square[1])
-        screen.blit(mateSquare, (64*file, 64*rank))
+        if isWhite:
+            screen.blit(mateSquare, (64*file, 64*rank))
+        else:
+            screen.blit(mateSquare, (448-64*file, 448-64*rank))
         #pygame.draw.rect(screen, mateColor, (64*file, 64*rank, 64, 64))
 
 
