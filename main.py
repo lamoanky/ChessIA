@@ -3,6 +3,7 @@ import chess
 from predict import predictMove
 
 
+
 darkColor = (181, 135, 99)
 lightColor = (240, 218, 181)
 selectedColor = (201, 255, 253)
@@ -37,11 +38,15 @@ selected = False
 selectedCoord = None
 gameOver = None
 playerTurn = True
+isWhite = True
 
 
-pieceToImage = {'P' : whitePawn, 'N' : whiteKnight, 'B' : whiteBishop, 'R' : whiteRook, 'Q' : whiteQueen, 'K' : whiteKing, 'p' : blackPawn, 'n' : blackKnight, 'b' : blackBishop, 'r' : blackRook, 'q' : blackQueen, 'k' : blackKing}
+whitePieces = {'P' : whitePawn, 'N' : whiteKnight, 'B' : whiteBishop, 'R' : whiteRook, 'Q' : whiteQueen, 'K' : whiteKing, 'p' : blackPawn, 'n' : blackKnight, 'b' : blackBishop, 'r' : blackRook, 'q' : blackQueen, 'k' : blackKing}
+blackPieces = {'p' : blackPawn, 'n' : blackKnight, 'b' : blackBishop, 'r' : blackRook, 'q' : blackQueen, 'k' : blackKing, 'P' : whitePawn, 'N' : whiteKnight, 'B' : whiteBishop, 'R' : whiteRook, 'Q' : whiteQueen, 'K' : whiteKing}
 findFile = {0 : 'a', 1:'b', 2:'c', 3:'d', 4:'e', 5:'f', 6:'g', 7:'h'}
 findFileReverse = {'a':0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5, 'g':6, 'h':7}
+#blackFile = {'a':'h', 'b':'g', 'c':'f', 'd': 'e', 'e':'d', 'f':'c', 'g':'b', 'h':'a'}
+#blackRank = {0:'h', 1:'g', 2:'f', 3:'e', 4:'d', 5:'c', 6:'b', 7:'a'}
 
 
 def drawSquares():
@@ -55,21 +60,40 @@ def drawSquares():
                 #pygame.draw.rect(screen, darkColor, (row*64, col*64, 64, 64))
 
 def drawPieces(board):
-    for row  in range(8):
-        for col in range(8):
-            square = chess.square(col,7-row)
-            piece = board.piece_at(square)
-            if piece is None:
-                continue
-            screen.blit(pieceToImage[piece.symbol()],(col*64, row*64))
+    if isWhite:
+        for row in range(8):
+            for col in range(8):
+                square = chess.square(col,7-row)
+                piece = board.piece_at(square)
+                if piece is None:
+                    continue
 
-def movePiece(coordinates):
+                screen.blit(whitePieces[piece.symbol()],(col*64, row*64))
+    else:
+        for row in range(7, -1, -1):
+            for col in range(7, -1, -1):
+                square = chess.square(col,7-row)
+                piece = board.piece_at(square)
+                if piece is None:
+                    continue
+
+                screen.blit(blackPieces[piece.symbol()],(512-64-col*64, 512-64-row*64))
+
+
+def movePiece(c):
     global selected, selectedCoord, gameOver, playerTurn
-
+    coordinates = [c[0], c[1]]
     if gameOver:
         return
+    if not isWhite:
+        midpoint = coordinates[0]-256
+        coordinates[0] = 512 - coordinates[0]
+        coordinates[1] = 512-coordinates[1]
     file = findFile[coordinates[0]//64]
     rank = str(8-coordinates[1]//64)
+    #else:
+        #file = blackFile[findFile[coordinates[0]//64]]
+        #rank = blackRank[str(8-coordinates[1]//64)]
 
     notation = f"{file}{rank}"
     piece = board.piece_at(chess.parse_square(notation))
@@ -104,7 +128,7 @@ def movePiece(coordinates):
                 print("Draw!")
     
     if not gameOver and not playerTurn:
-        board.push(predictMove(board))            
+        board.push(predictMove(board, isWhite))            
         playerTurn = True
 
 
@@ -124,7 +148,10 @@ def drawHighlight(selectedCoord, selected):
         return
     file = findFileReverse[selectedCoord[0]]
     rank = 8-int(selectedCoord[1])
-    screen.blit(selectedSquare, (64*file, 64*rank))
+    if isWhite:
+        screen.blit(selectedSquare, (64*file, 64*rank))
+    else:
+        screen.blit(selectedSquare, (448-64*file, 448-64*rank))
     #pygame.draw.rect(screen, selectedColor, (64*file, 64*rank, 64, 64))
 
 def drawCheckmate():
@@ -153,6 +180,24 @@ while running:
             running = False
         if event.type == pygame.MOUSEBUTTONDOWN and playerTurn:
             movePiece(pygame.mouse.get_pos())
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+            
+            board = chess.Board()
+            print(board)
+            #board.apply_mirror()  
+
+            playerTurn = False
+            print("Mirroring board")
+            print(board)
+            board.push(predictMove(board, isWhite))    
+            print(board)        
+            playerTurn = True
+            isWhite = not isWhite
+                      
+        if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            board = chess.Board() 
+          
+
 
     drawSquares()
     drawHighlight(selectedCoord, selected)
