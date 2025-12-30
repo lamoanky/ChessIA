@@ -7,6 +7,7 @@ import numpy
 class Reader:
     def __init__(self, file):
         self.pgn = open(file)
+        self.file = file
         self.gamesParsed = 0
     def readChunk(self, chunkSize):
         positions = []
@@ -44,7 +45,7 @@ class Reader:
 
     def restart(self):
         self.pgn.close()
-        self.pgn = open(self.file)
+        self.pgn = open(self.pgn)
         self.gamesParsed = 0
 
 

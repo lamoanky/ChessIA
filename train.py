@@ -7,6 +7,7 @@ import time
 from readFile import Reader
 
 print("Starting training!")
+print("updated")
 
 epochs = 40
 chunkSize = 5000
