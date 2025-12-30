@@ -1,12 +1,10 @@
 import chess
-material = {chess.PAWN:1, chess.KNIGHT:3, chess.BISHOP:3, chess.ROOK:5, chess.QUEEN:9}
+material = {chess.PAWN:1, chess.KNIGHT:3, chess.BISHOP:3, chess.ROOK:5, chess.QUEEN:9, chess.KING:100}
 def calculateMaterial(board, isWhite): #more negative means bot has more material
     materialDiff = 0
     for i in range(64):
         currentPiece = board.piece_at(i)
         if currentPiece is None:
-            continue
-        if currentPiece.piece_type == chess.KING:
             continue
         
 
@@ -21,6 +19,8 @@ def calculateMaterial(board, isWhite): #more negative means bot has more materia
 
 
 def filterBlunders(board, possibleMoves, isWhite):
+    if not possibleMoves:
+        return
     materialBefore = calculateMaterial(board, isWhite)
     bestMove = possibleMoves[0]
     

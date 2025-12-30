@@ -188,16 +188,10 @@ while running:
         if event.type == pygame.MOUSEBUTTONDOWN and playerTurn:
             movePiece(pygame.mouse.get_pos())
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-            
             board = chess.Board()
-            print(board)
-            #board.apply_mirror()  
-
             playerTurn = False
-            print("Mirroring board")
-            print(board)
-            board.push(predictMove(board, isWhite))    
-            print(board)        
+            if isWhite:
+                board.push(predictMove(board, isWhite))   
             playerTurn = True
             isWhite = not isWhite
                       
