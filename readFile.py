@@ -45,7 +45,7 @@ class Reader:
 
     def restart(self):
         self.pgn.close()
-        self.pgn = open(self.pgn)
+        self.pgn = open(self.file)
         self.gamesParsed = 0
 
 
