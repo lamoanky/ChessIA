@@ -2,13 +2,13 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from readFile import readF
 from neuralNetwork import ChessModel, device
 import time
+from readFile import Reader
 
 print("Starting training!")
 
-epochs = 20
+epochs = 40
 chunkSize = 5000
 chunkAmount = 10
 
@@ -16,6 +16,7 @@ model = ChessModel().to(device)
 loss = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
 
+reader = Reader("dataset/lichess_elite_2020-06.pgn")
 
 for epoch in range(epochs):
     startTime = time.time()
@@ -25,7 +26,8 @@ for epoch in range(epochs):
     correct = 0
     batchSize = 0
     for i in range(chunkAmount):
-        dataLoader = DataLoader(readF(i, chunkSize), batch_size=64, shuffle=True)
+        dataset = reader.readChunk(chunkSize)
+        dataLoader = DataLoader(dataset, batch_size=64, shuffle=True)
         
 
         for batch, (pos, move) in enumerate(dataLoader):
@@ -62,6 +64,8 @@ for epoch in range(epochs):
     if epoch%5 ==0 and epoch != 0:
         torch.save(model.state_dict(), f"/content/drive/MyDrive/ChessIA/model{epoch+1}v2.pth")
         print(f"Saved model {epoch+1}!")
+    reader.restart()
 
+reader.close()
 torch.save(model.state_dict(), f"/content/drive/MyDrive/ChessIA/modelfinal.pth")
 print("End of training!")

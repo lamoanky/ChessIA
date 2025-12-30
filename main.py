@@ -8,6 +8,8 @@ darkColor = (181, 135, 99)
 lightColor = (240, 218, 181)
 selectedColor = (201, 255, 253)
 mateColor = (255, 0, 0)
+squareSize = 64
+
 whitePawn = pygame.image.load(r"sprites\whitePawn.png")
 whiteKnight = pygame.image.load(r"sprites\whiteKnight.png")
 whiteBishop = pygame.image.load(r"sprites\whiteBishop.png")
@@ -30,7 +32,7 @@ mateSquare = pygame.image.load(r"sprites\mateSquare.png")
 board = chess.Board()
 pygame.init()
 pygame.display.set_icon(whitePawn)
-screen = pygame.display.set_mode((512, 512))
+screen = pygame.display.set_mode((squareSize*8, squareSize*8))
 pygame.display.set_caption("Chess MonkeyBot")
 clock = pygame.time.Clock()
 running = True
@@ -53,11 +55,11 @@ def drawSquares():
     for row in range(8):
         for col in range(8):
             if(row+col)%2 == 0: #Light square
-                screen.blit(lightSquare, (row*64, col*64))
-                #pygame.draw.rect(screen, lightColor, (row*64, col*64, 64, 64))
+                screen.blit(lightSquare, (row*squareSize, col*squareSize))
+                #pygame.draw.rect(screen, lightColor, (row squareSize, col squareSize, squareSize, squareSize))
             else:
-                screen.blit(darkSquare, (row*64, col*64))
-                #pygame.draw.rect(screen, darkColor, (row*64, col*64, 64, 64))
+                screen.blit(darkSquare, (row*squareSize, col*squareSize))
+                #pygame.draw.rect(screen, darkColor, (row squareSize, col squareSize, squareSize, squareSize))
 
 def drawPieces(board):
     if isWhite:
@@ -68,7 +70,7 @@ def drawPieces(board):
                 if piece is None:
                     continue
 
-                screen.blit(whitePieces[piece.symbol()],(col*64, row*64))
+                screen.blit(whitePieces[piece.symbol()],(col*squareSize, row*squareSize))
     else:
         for row in range(7, -1, -1):
             for col in range(7, -1, -1):
@@ -77,7 +79,7 @@ def drawPieces(board):
                 if piece is None:
                     continue
 
-                screen.blit(blackPieces[piece.symbol()],(512-64-col*64, 512-64-row*64))
+                screen.blit(blackPieces[piece.symbol()],(squareSize*7-squareSize-col*squareSize, squareSize*7-squareSize-row*squareSize))
 
 
 def movePiece(c):
@@ -89,11 +91,11 @@ def movePiece(c):
         midpoint = coordinates[0]-256
         coordinates[0] = 512 - coordinates[0]
         coordinates[1] = 512-coordinates[1]
-    file = findFile[coordinates[0]//64]
-    rank = str(8-coordinates[1]//64)
+    file = findFile[coordinates[0]//squareSize]
+    rank = str(8-coordinates[1]//squareSize)
     #else:
-        #file = blackFile[findFile[coordinates[0]//64]]
-        #rank = blackRank[str(8-coordinates[1]//64)]
+        #file = blackFile[findFile[coordinates[0]/ squareSize]]
+        #rank = blackRank[str(8-coordinates[1]/ squareSize)]
 
     notation = f"{file}{rank}"
     piece = board.piece_at(chess.parse_square(notation))
@@ -149,10 +151,10 @@ def drawHighlight(selectedCoord, selected):
     file = findFileReverse[selectedCoord[0]]
     rank = 8-int(selectedCoord[1])
     if isWhite:
-        screen.blit(selectedSquare, (64*file, 64*rank))
+        screen.blit(selectedSquare,  (squareSize*file, squareSize*rank))
     else:
-        screen.blit(selectedSquare, (448-64*file, 448-64*rank))
-    #pygame.draw.rect(screen, selectedColor, (64*file, 64*rank, 64, 64))
+        screen.blit(selectedSquare, (squareSize*7-squareSize*file, squareSize*7-squareSize*rank))
+    #pygame.draw.rect(screen, selectedColor,  squareSize*file, squareSize*rank, squareSize, squareSize))
 
 def drawCheckmate():
 
@@ -165,19 +167,19 @@ def drawCheckmate():
         rank = 8-int(square[1])
 
         if isWhite:
-            screen.blit(mateSquare, (64*file, 64*rank))
+            screen.blit(mateSquare,  (squareSize*file, squareSize*rank))
         else:
-            screen.blit(mateSquare, (448-64*file, 448-64*rank))
-        #pygame.draw.rect(screen, mateColor, (64*file, 64*rank, 64, 64))
+            screen.blit(mateSquare, (squareSize*7-squareSize*file, squareSize*7-squareSize*rank))
+        #pygame.draw.rect(screen, mateColor,  squareSize*file, squareSize*rank, squareSize, squareSize))
     if gameOver == "White":
         square = chess.square_name(board.king(chess.WHITE))
         file = findFileReverse[square[0]]
         rank = 8-int(square[1])
         if isWhite:
-            screen.blit(mateSquare, (64*file, 64*rank))
+            screen.blit(mateSquare,  (squareSize*file, squareSize*rank))
         else:
-            screen.blit(mateSquare, (448-64*file, 448-64*rank))
-        #pygame.draw.rect(screen, mateColor, (64*file, 64*rank, 64, 64))
+            screen.blit(mateSquare, (squareSize*7-squareSize*file, squareSize*7- squareSize*rank))
+        #pygame.draw.rect(screen, mateColor,  squareSize*file, squareSize*rank, squareSize, squareSize))
 
 
 
