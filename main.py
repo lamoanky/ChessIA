@@ -79,7 +79,7 @@ def drawPieces(board):
                 if piece is None:
                     continue
 
-                screen.blit(blackPieces[piece.symbol()],(squareSize*7-squareSize-col*squareSize, squareSize*7-squareSize-row*squareSize))
+                screen.blit(blackPieces[piece.symbol()],(squareSize*8-squareSize-col*squareSize, squareSize*8-squareSize-row*squareSize))
 
 
 def movePiece(c):
@@ -164,7 +164,7 @@ def drawCheckmate():
         if isWhite:
             screen.blit(mateSquare,  (squareSize*file, squareSize*rank))
         else:
-            screen.blit(mateSquare, (squareSize*7-squareSize*file, squareSize*7-squareSize*rank))
+            screen.blit(mateSquare, (squareSize*8-squareSize*file, squareSize*8-squareSize*rank))
         #pygame.draw.rect(screen, mateColor,  squareSize*file, squareSize*rank, squareSize, squareSize))
     if gameOver == "White":
         square = chess.square_name(board.king(chess.WHITE))
@@ -173,7 +173,7 @@ def drawCheckmate():
         if isWhite:
             screen.blit(mateSquare,  (squareSize*file, squareSize*rank))
         else:
-            screen.blit(mateSquare, (squareSize*7-squareSize*file, squareSize*7- squareSize*rank))
+            screen.blit(mateSquare, (squareSize*8-squareSize*file, squareSize*8-squareSize*rank))
         #pygame.draw.rect(screen, mateColor,  squareSize*file, squareSize*rank, squareSize, squareSize))
 
 def moveAI(board):
@@ -207,10 +207,12 @@ while running:
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             board = chess.Board()
             playerTurn = False
-            if isWhite:
-                board.push(predictMove(board, isWhite))   
-            playerTurn = True
+            selected = False
+            selectedCoord = None
+            gameOver = False
             isWhite = not isWhite
+
+            
                       
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
             board = chess.Board() 
