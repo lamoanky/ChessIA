@@ -9,6 +9,7 @@ class Reader:
         self.pgn = open(file)
         self.file = file
         self.gamesParsed = 0
+
     def readChunk(self, chunkSize):
         positions = []
         moves = []

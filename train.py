@@ -15,7 +15,7 @@ chunkAmount = 10
 
 model = ChessModel().to(device)
 loss = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.001)
+optimizer = optim.Adam(model.parameters(), lr=0.0003)
 
 reader = Reader("dataset/lichess_elite_2020-06.pgn")
 
@@ -63,7 +63,7 @@ for epoch in range(epochs):
     print("---------------------")   
 
     if epoch%5 ==0 and epoch != 0:
-        torch.save(model.state_dict(), f"/content/drive/MyDrive/ChessIA/model{epoch+1}v2.pth")
+        torch.save(model.state_dict(), f"/content/drive/MyDrive/ChessIA/model{epoch+1}v3.pth")
         print(f"Saved model {epoch+1}!")
     reader.restart()
 
