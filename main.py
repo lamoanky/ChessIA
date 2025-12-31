@@ -129,11 +129,6 @@ def movePiece(c):
                 gameOver = "Draw"
                 print("Draw!")
     
-    if not gameOver and not playerTurn:
-        board.push(predictMove(board, isWhite))            
-        playerTurn = True
-
-
     selected = not selected
 
 def checkLegal(move, piece, promoteMove):
@@ -181,9 +176,29 @@ def drawCheckmate():
             screen.blit(mateSquare, (squareSize*7-squareSize*file, squareSize*7- squareSize*rank))
         #pygame.draw.rect(screen, mateColor,  squareSize*file, squareSize*rank, squareSize, squareSize))
 
-
+def moveAI(board):
+    global gameOver, playerTurn
+    if not gameOver and not playerTurn:
+        board.push(predictMove(board, isWhite))            
+        playerTurn = True
+    else:
+        return
+    
+    if board.is_game_over():
+        if board.result() == "1-0":
+            gameOver = "Black"
+            print("White wins!")
+        elif board.result() == "0-1":
+            gameOver = "White"
+            print("Black wins!")
+        else:
+            gameOver = "Draw"
+            print("Draw!")
+    
+    
 
 while running:
+    moveAI(board)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -207,6 +222,7 @@ while running:
     drawCheckmate()
 
     drawPieces(board)
+    
 
     pygame.display.flip()
 

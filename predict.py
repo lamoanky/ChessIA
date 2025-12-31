@@ -8,7 +8,7 @@ from neuralNetwork import ChessModel, device
 from blunder import filterBlunders
 model = ChessModel()
 def loadModel():
-    path = "model6v2.pth"
+    path = "model6v3.pth"
 
     
     model.load_state_dict(torch.load(path, device))
@@ -34,8 +34,8 @@ def getTop5(moveList, board, isWhite):
             move = chess.Move.from_uci(uciMove)
             promoteMove = chess.Move.from_uci(pMove)
             if promoteMove in board.legal_moves:
-                return promoteMove
-            if move in board.legal_moves:
+                possibleMoves.insert(0, promoteMove)
+            elif move in board.legal_moves:
                 possibleMoves.append(move)
         except chess.InvalidMoveError:
             continue
