@@ -6,9 +6,9 @@ def calculateMaterial(board, isWhite): #more negative means bot has more materia
     if board.is_checkmate():
         botColor = chess.BLACK if isWhite else chess.WHITE
         if board.turn == botColor:
-            return 10000
-        else:
             return -10000
+        else:
+            return 10000
     materialDiff = 0
     for i in range(64):
         currentPiece = board.piece_at(i)

@@ -1,14 +1,14 @@
-from tensors import boardToTensor, moveToValue
 from dataset import ChessPositionDataset
 import chess.pgn
 import torch
 import numpy
 
 class Reader:
-    def __init__(self, file):
+    def __init__(self, file, tensors):
         self.pgn = open(file)
         self.file = file
         self.gamesParsed = 0
+        self.tensors = tensors
 
     def readChunk(self, chunkSize):
         positions = []
@@ -24,8 +24,8 @@ class Reader:
             
 
             for move in game.mainline_moves():
-                boardArray = boardToTensor(board)
-                moveValue = moveToValue(move.uci())
+                boardArray = self.tensors.boardToTensor(board)
+                moveValue = self.tensors.moveToValue(move.uci())
 
                 positions.append(boardArray)
                 moves.append(moveValue)

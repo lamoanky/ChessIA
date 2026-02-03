@@ -5,68 +5,76 @@ from torch.utils.data import DataLoader
 from neuralNetwork import ChessModel, device
 import time
 from readFile import Reader
+from tensors import Tensors
+class Train:
+    def __init__(self, tensors):
+        self.tensors = tensors
+    def startTraining(self):
+        print("Starting training!")
+        print("updated 3")
 
-print("Starting training!")
-print("updated 3")
+        epochs = 40
+        chunkSize = 5
+        chunkAmount = 10
 
-epochs = 40
-chunkSize = 5000
-chunkAmount = 10
+        model = ChessModel().to(device)
+        loss = nn.CrossEntropyLoss()
+        optimizer = optim.Adam(model.parameters(), lr=0.0003)
 
-model = ChessModel().to(device)
-loss = nn.CrossEntropyLoss()
-optimizer = optim.Adam(model.parameters(), lr=0.0003)
+        reader = Reader("dataset/lichess_elite_2020-06.pgn", self.tensors)
 
-reader = Reader("dataset/lichess_elite_2020-06.pgn")
+        for epoch in range(epochs):
+            startTime = time.time()
+            model.train()
+            averageLoss = 0
+            batches = 0
+            correct = 0
+            batchSize = 0
+            for i in range(chunkAmount):
+                dataset = reader.readChunk(chunkSize)
+                dataLoader = DataLoader(dataset, batch_size=64, shuffle=True)
+                
 
-for epoch in range(epochs):
-    startTime = time.time()
-    model.train()
-    averageLoss = 0
-    batches = 0
-    correct = 0
-    batchSize = 0
-    for i in range(chunkAmount):
-        dataset = reader.readChunk(chunkSize)
-        dataLoader = DataLoader(dataset, batch_size=64, shuffle=True)
-        
+                for batch, (pos, move) in enumerate(dataLoader):
+                    batchSize = pos.size(0)
+                    pos = pos.to(device)
+                    move = move.to(device)
 
-        for batch, (pos, move) in enumerate(dataLoader):
-            batchSize = pos.size(0)
-            pos = pos.to(device)
-            move = move.to(device)
+                    optimizer.zero_grad()
+                    prediction = model(pos)
+                    lossValue = loss(prediction, move)
+                    lossValue.backward()
+                    optimizer.step()
 
-            optimizer.zero_grad()
-            prediction = model(pos)
-            lossValue = loss(prediction, move)
-            lossValue.backward()
-            optimizer.step()
+                    maximum, predictedMove = prediction.max(1)
+                    correct += predictedMove.eq(move).sum().item()
 
-            maximum, predictedMove = prediction.max(1)
-            correct += predictedMove.eq(move).sum().item()
-
-            averageLoss += lossValue.item() * batchSize
-            batches += batchSize
-        
-    averageLoss = averageLoss/batches
-    endTime = time.time()
-    totalTime = endTime-startTime
-    accuracy = correct/batches * 100
-
-
-    print("---------------------")
-    print(f"Epoch #{epoch+1}:") 
-    print(f"Time taken: {totalTime}")
-    print(f"Average loss: {averageLoss}")
-    print(f"Accuracy: {accuracy}%")
-    print(correct, batches)
-    print("---------------------")   
+                    averageLoss += lossValue.item() * batchSize
+                    batches += batchSize
+                
+            averageLoss = averageLoss/batches
+            endTime = time.time()
+            totalTime = endTime-startTime
+            accuracy = correct/batches * 100
 
 
-    torch.save(model.state_dict(), f"/content/drive/MyDrive/ChessIA/model{epoch+1}v3.pth")
-    print(f"Saved model {epoch+1}!")
-    reader.restart()
+            print("---------------------")
+            print(f"Epoch #{epoch+1}:") 
+            print(f"Time taken: {totalTime}")
+            print(f"Average loss: {averageLoss}")
+            print(f"Accuracy: {accuracy}%")
+            print(correct, batches)
+            print("---------------------")   
 
-reader.close()
-torch.save(model.state_dict(), f"/content/drive/MyDrive/ChessIA/modelfinal.pth")
-print("End of training!")
+
+            torch.save(model.state_dict(), f"/content/drive/MyDrive/ChessIA/model{epoch+1}v3.pth")
+            print(f"Saved model {epoch+1}!")
+            reader.restart()
+
+        reader.close()
+        torch.save(model.state_dict(), f"/content/drive/MyDrive/ChessIA/modelfinal.pth")
+        print("End of training!")
+
+tensors = Tensors()
+train = Train(tensors)
+train.startTraining()

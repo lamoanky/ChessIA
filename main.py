@@ -1,8 +1,10 @@
 import pygame
 import chess
-from predict import predictMove
+from predict import Predict
+from tensors import Tensors
 
-
+tensors = Tensors()
+predict = Predict(tensors)
 
 darkColor = (181, 135, 99)
 lightColor = (240, 218, 181)
@@ -164,7 +166,7 @@ def drawCheckmate():
         if isWhite:
             screen.blit(mateSquare,  (squareSize*file, squareSize*rank))
         else:
-            screen.blit(mateSquare, (squareSize*8-squareSize*file, squareSize*8-squareSize*rank))
+            screen.blit(mateSquare, (squareSize*7-squareSize*file, squareSize*7-squareSize*rank))
         #pygame.draw.rect(screen, mateColor,  squareSize*file, squareSize*rank, squareSize, squareSize))
     if gameOver == "White":
         square = chess.square_name(board.king(chess.WHITE))
@@ -173,13 +175,13 @@ def drawCheckmate():
         if isWhite:
             screen.blit(mateSquare,  (squareSize*file, squareSize*rank))
         else:
-            screen.blit(mateSquare, (squareSize*8-squareSize*file, squareSize*8-squareSize*rank))
+            screen.blit(mateSquare, (squareSize*7-squareSize*file, squareSize*7-squareSize*rank))
         #pygame.draw.rect(screen, mateColor,  squareSize*file, squareSize*rank, squareSize, squareSize))
 
 def moveAI(board):
     global gameOver, playerTurn
     if not gameOver and not playerTurn:
-        board.push(predictMove(board, isWhite))            
+        board.push(predict.predictMove(board, isWhite))            
         playerTurn = True
     else:
         return
