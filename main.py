@@ -208,7 +208,7 @@ while running:
             movePiece(pygame.mouse.get_pos())
         if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             board = chess.Board()
-            playerTurn = False
+            playerTurn = False if isWhite else True
             selected = False
             selectedCoord = None
             gameOver = False

@@ -9,7 +9,7 @@ from blunder import filterBlunders
 class Predict:
     def __init__(self, tensors):
         self.model = ChessModel()
-        self.path = "model17v3.pth"        
+        self.path = "models/model17v3.pth"        
         self.model.load_state_dict(torch.load(self.path, device))
         self.model.to(device)
         self.model.eval()
@@ -55,3 +55,7 @@ class Predict:
             moveList = indices.tolist()[0]
 
             return self.getTop5(moveList, board, isWhite)
+        
+
+
+        
